@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@/utils/cn";
 import React, { useEffect, useRef, useState } from "react";
 import { createNoise3D } from "simplex-noise";
@@ -31,7 +29,7 @@ export const WavyBackground: React.FC<WavyBackgroundProps> = ({
 }) => {
   const noise = createNoise3D();
   let w: number, h: number, nt: number, i: number, x: number, ctx: CanvasRenderingContext2D | null, canvas: HTMLCanvasElement | null;
-  
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const getSpeed = () => {
@@ -42,27 +40,6 @@ export const WavyBackground: React.FC<WavyBackgroundProps> = ({
         return 0.002;
       default:
         return 0.001;
-    }
-  };
-
-  const init = () => {
-    canvas = canvasRef.current;
-    if (canvas) {
-      ctx = canvas.getContext("2d");
-      if (ctx) {
-        w = ctx.canvas.width = window.innerWidth;
-        h = ctx.canvas.height = window.innerHeight;
-        ctx.filter = `blur(${blur}px)`;
-        nt = 0;
-        window.onresize = function () {
-          if (ctx) {
-            w = ctx.canvas.width = window.innerWidth;
-            h = ctx.canvas.height = window.innerHeight;
-            ctx.filter = `blur(${blur}px)`;
-          }
-        };
-        render();
-      }
     }
   };
 
@@ -90,7 +67,30 @@ export const WavyBackground: React.FC<WavyBackgroundProps> = ({
     }
   };
 
+  // The animationId and init function need to be defined outside of useEffect for proper dependency handling
   let animationId: number;
+  
+  const init = () => {
+    canvas = canvasRef.current;
+    if (canvas) {
+      ctx = canvas.getContext("2d");
+      if (ctx) {
+        w = ctx.canvas.width = window.innerWidth;
+        h = ctx.canvas.height = window.innerHeight;
+        ctx.filter = `blur(${blur}px)`;
+        nt = 0;
+        window.onresize = function () {
+          if (ctx) {
+            w = ctx.canvas.width = window.innerWidth;
+            h = ctx.canvas.height = window.innerHeight;
+            ctx.filter = `blur(${blur}px)`;
+          }
+        };
+        render();
+      }
+    }
+  };
+
   const render = () => {
     if (!ctx) return;
     ctx.fillStyle = backgroundFill || "black";
@@ -137,3 +137,4 @@ export const WavyBackground: React.FC<WavyBackgroundProps> = ({
     </div>
   );
 };
+
